@@ -71,8 +71,8 @@ int main(int argc, char** argv){
     }
     prefixFile.close();
 
-    // --- START TIMER ---
-    clock_t tStart=clock();
+    
+    //clock_t tStart=clock();
 
     //  For each prefix,
     for(const string& prefix : prefixes){
@@ -104,10 +104,10 @@ int main(int argc, char** argv){
 
 
 
-    clock_t tEnd=clock();
-    double duration=(double)(tEnd-tStart) / CLOCKS_PER_SEC * 1000.0;
+    //clock_t tEnd=clock();
+    //double duration=(double)(tEnd-tStart) / CLOCKS_PER_SEC * 1000.0;
     
-    cout<<"\n[Run Time for Part 2: "<<(int)duration<<" ms]\n";
+    //cout<<"\n[Run Time for Part 2: "<<(int)duration<<" ms]\n";
 
     return 0;
 
@@ -135,7 +135,7 @@ int main(int argc, char** argv){
  * Time Complexity: O(m * l * (n + k log k))
  * m prefix in total, For each prefix the code perform a linear scan through all 'n' movies. 
  * Checking if a movie string starts with a prefix takes up to 'l' comparisons in the worst case, 
- * making the scan O(n * l). After finding up to 'k' matches, we sort them. 
+ * making the scan O(n * l). After finding up to 'k' matches, the code sort them. 
  * Sorting 'k' elements takes O(k log k) comparisons, 
  * and each string comparison takes up to 'l' operations, making the sort O(k log k * l). 
  * Multiplying by 'm' prefixes gives O(m * (n * l + k log k * l)).
