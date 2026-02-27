@@ -18,6 +18,6 @@ bool cmpRating(const Movie& a, const Movie& b){
 void printAlpha(vector<Movie>& movies){
     sort(movies.begin(), movies.end(), cmpName);
     for(const auto& m : movies){
-        cout<<m.name<< ", " <<fixed<<setprecision(1)<<m.rating<< "\n";
+        cout<<m.name<< ", "<<m.rating<< "\n";
     }
 }
