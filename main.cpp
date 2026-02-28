@@ -50,11 +50,19 @@ int main(int argc, char** argv){
 
     movieFile.close();
 
+
+    // Sort
+    sort(movies.begin(), movies.end(), cmpName);
+
+    // Part 1
     if(argc == 2){
-            //print all the movies in ascending alphabetical order of movie names
-            printAlpha(movies);
-            return 0;
+        for(const auto& m : movies){
+            cout << m.name << ", " << m.rating << "\n";
+        }
+        return 0;
     }
+
+
 
     ifstream prefixFile (argv[2]);
 
@@ -74,30 +82,44 @@ int main(int argc, char** argv){
     
     //clock_t tStart=clock();
 
+    //store the best movie of each prefix
+    vector<string> bestMoviesOutput;
+
     //  For each prefix,
     for(const string& prefix : prefixes){
         vector<Movie> matches;
-    //  Find all movies that have that prefix and store them in an appropriate data structure
-    for(const auto& m : movies){
-            if(startsWith(m.name, prefix)){
-                matches.push_back(m);
-            }
+        
+        Movie dummy;
+        dummy.name = prefix;
+        
+        // (O(log N))  find the first movie with given prefix
+        auto it = lower_bound(movies.begin(), movies.end(), dummy, cmpName);
+        
+        while(it != movies.end() && startsWith(it->name, prefix)){
+            matches.push_back(*it);
+            ++it;
         }
-    //  If no movie with that prefix exists print the following message
-    if(matches.empty()){
+
+        //  If no movie with that prefix exists print the following message
+        if(matches.empty()){
             cout<<"No movies found with prefix "<<prefix<<endl;
         } else {
             sort(matches.begin(), matches.end(), cmpRating);
             
             for(const auto& m : matches){
-                cout<<m.name<<", "<<m.rating<<endl;
+                cout << m.name << ", " << m.rating << endl;
             }
 
-    //  For each prefix,
-    
-    //  Print the highest rated movie with that prefix if it exists.
-            cout<<"Best movie with prefix "<<prefix<<" is: "<<matches.front().name<< " with rating "<<fixed<<setprecision(1)<<matches.front().rating<<endl;
+            stringstream ss;
+            ss << "Best movie with prefix " << prefix << " is: " << matches.front().name 
+               << " with rating " << fixed << setprecision(1) << matches.front().rating;
+            bestMoviesOutput.push_back(ss.str());
         }
+    }
+
+
+    for(const string& bestMsg : bestMoviesOutput){
+        cout << bestMsg << endl;
     }
 
 
@@ -110,6 +132,7 @@ int main(int argc, char** argv){
     //cout<<"\n[Run Time for Part 2: "<<(int)duration<<" ms]\n";
 
     return 0;
+}
 
 
 
@@ -119,6 +142,42 @@ int main(int argc, char** argv){
 
 
 
+
+/*
+ * 3A:
+ * Time Complexity: O(m * l * (n + k log k))
+ * m prefix in total, For each prefix the code perform a linear scan through all 'n' movies. 
+ * Checking if a movie string starts with a prefix takes up to 'l' comparisons in the worst case, 
+ * making the scan O(n * l). After finding up to 'k' matches, the code sort them. 
+ * Sorting 'k' elements takes O(k log k) comparisons, 
+ * and each string comparison takes up to 'l' operations, making the sort O(k log k * l). 
+ * Multiplying by 'm' prefixes gives O(m * (n * l + k log k * l)).
+ *-input_20_random.csv: 48 ms
+ *-input_100_random.csv: 61 ms
+ *-input_1000_random.csv: 189 ms
+ *-input_76920_random.csv: 8295 ms
+ * 
+ * 3B:
+ * Space Complexity: O(k * l)
+ * For each prefix query, the code create a temporary vector to hold up to 'k' matching Movie objects.
+ * Since each movie name can be up to 'l' characters long, 
+ * the additional space required to hold these matches in memory is O(k * l).
+ *
+ * 3C:
+ * I designed my algorithm primarily for a low space complexity. I kept the dataset in a vector.
+ * I was not able to achieve a low time complexity. Because the vector has unsorted prefixes, 
+ * the algorithm is forced to do a full O(n) linear scan for every single time. 
+ * While this saves space, it makes the time complexity high.
+ */
+
+bool parseLine(string &line, string &movieName, double &movieRating){
+    int commaIndex=line.find_last_of(",");
+    movieName=line.substr(0, commaIndex);
+    movieRating=stod(line.substr(commaIndex+1));
+    if(movieName[0] == '\"'){
+        movieName=movieName.substr(1, movieName.length()-2);
+    }
+    return true;
 }
 
 
