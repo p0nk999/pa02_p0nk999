@@ -147,29 +147,33 @@ int main(int argc, char** argv){
 
 /*
  * 3A:
- * Time Complexity: O(m * l * (n + k log k))
- * m prefix in total, For each prefix the code perform a linear scan through all 'n' movies. 
+ * Time Complexity: O(n log n + m * l * (log n + k log k))
+ * n movies in total, the code sort them first. Sorting 'n' elements takes O(n log n) operations.
+ * m prefix in total, For each prefix the code perform a binary search through 'n' movies. 
  * Checking if a movie string starts with a prefix takes up to 'l' comparisons in the worst case, 
- * making the scan O(n * l). After finding up to 'k' matches, the code sort them. 
+ * making the search O(log n * l). After finding up to 'k' matches, the code sort them. 
  * Sorting 'k' elements takes O(k log k) comparisons, 
  * and each string comparison takes up to 'l' operations, making the sort O(k log k * l). 
- * Multiplying by 'm' prefixes gives O(m * (n * l + k log k * l)).
- *-input_20_random.csv: 48 ms
- *-input_100_random.csv: 61 ms
- *-input_1000_random.csv: 189 ms
- *-input_76920_random.csv: 8295 ms
- * 
+ * Multiplying by 'm' prefixes gives O(m * l * (log n + k log k)).
+ *
+ * -input_20_random.csv: 20 ms
+ * -input_100_random.csv: 14 ms
+ * -input_1000_random.csv: 16 ms
+ * -input_76920_random.csv: 83 ms
  * 3B:
- * Space Complexity: O(k * l)
+ * Space Complexity: O(m * l + k * l)
  * For each prefix query, the code create a temporary vector to hold up to 'k' matching Movie objects.
+ * Also the code keep another vector to hold 'm' best movie strings to print at the end.
  * Since each movie name can be up to 'l' characters long, 
- * the additional space required to hold these matches in memory is O(k * l).
+ * the additional space required to hold these matches and strings in memory is O(m * l + k * l).
  *
  * 3C:
- * I designed my algorithm primarily for a low space complexity. I kept the dataset in a vector.
- * I was not able to achieve a low time complexity. Because the vector has unsorted prefixes, 
- * the algorithm is forced to do a full O(n) linear scan for every single time. 
- * While this saves space, it makes the time complexity high.
+ * I designed my algorithm for both a low time complexity and a low space complexity. 
+ * My target time complexity was O(n log n + m * l * (log n + k log k)) and space complexity was O(k * l).
+ * I was able to achieve both. Because I sort the movies first, the algorithm use binary search to find prefixes.
+ * It does not need to do a full O(n) linear scan for every single time. This saves time.
+ * I kept the temporary matches in a vector of size 'k' instead of copying all data, so this saves space.
+ * Low time complexity was harder to achieve. Because it requires me to change my mind to sort the dataset first and use lower_bound to search.
  */
 
 bool parseLine(string &line, string &movieName, double &movieRating){
