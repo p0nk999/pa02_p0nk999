@@ -38,7 +38,7 @@ int main(int argc, char** argv){
     vector<Movie> movies;
     string line, movieName;
     double movieRating;
-    getline(movieFile, line);
+    
     // Read each file and store the name and rating
     while(getline (movieFile, line) && parseLine(line, movieName, movieRating)){
             // Use std::string movieName and double movieRating
