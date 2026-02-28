@@ -107,8 +107,10 @@ int main(int argc, char** argv){
             sort(matches.begin(), matches.end(), cmpRating);
             
             for(const auto& m : matches){
+                
                 cout << m.name << ", " << m.rating << endl;
             }
+            cout<<endl;
 
             stringstream ss;
             ss << "Best movie with prefix " << prefix << " is: " << matches.front().name 
